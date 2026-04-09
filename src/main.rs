@@ -5,7 +5,7 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
 use std::process::Command;
 
-const BUILTIN_COMMANDS: [&str; 3] = ["exit", "echo", "type"];
+const BUILTIN_COMMANDS: [&str; 4] = ["exit", "echo", "type", "pwd"];
 
 fn main() {
     loop {
@@ -46,6 +46,14 @@ fn eval_command(command: &str, args: &[&str]) {
             println!("{} is {}", target, path.display());
         } else {
             println!("{}: not found", target);
+        }
+        return;
+    }
+
+    if command == "pwd" {
+        match env::current_dir() {
+            Ok(path) => println!("{}", path.display()),
+            Err(err) => eprintln!("pwd: {}", err),
         }
         return;
     }
